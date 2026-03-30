@@ -1,0 +1,247 @@
+{
+  "datasets": [
+    {
+      "name": "0571b752",
+      "displayName": "perfil_sazonal_mensal",
+      "queryLines": [
+        "SELECT * FROM atmos.gold.perfil_sazonal_mensal"
+      ]
+    }
+  ],
+  "pages": [
+    {
+      "name": "d0ae07c9",
+      "displayName": "Untitled page",
+      "layout": [
+        {
+          "widget": {
+            "name": "e963aa00",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0571b752",
+                  "fields": [
+                    {
+                      "name": "max(timestamp_processamento)",
+                      "expression": "MAX(`timestamp_processamento`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 2,
+              "frame": {
+                "title": "Última Atualização",
+                "showTitle": true
+              },
+              "widgetType": "counter",
+              "encodings": {
+                "value": {
+                  "fieldName": "max(timestamp_processamento)",
+                  "displayName": "Última Atualização"
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 6,
+            "y": 0,
+            "width": 6,
+            "height": 1
+          }
+        },
+        {
+          "widget": {
+            "name": "cff51ee3",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0571b752",
+                  "fields": [
+                    {
+                      "name": "cidade",
+                      "expression": "`cidade`"
+                    },
+                    {
+                      "name": "ano",
+                      "expression": "`ano`"
+                    },
+                    {
+                      "name": "avg(precipitacao_total_mm)",
+                      "expression": "AVG(`precipitacao_total_mm`)"
+                    }
+                  ],
+                  "disaggregated": false
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Média de Precipitação por Ano e Cidade",
+                "showTitle": true
+              },
+              "widgetType": "bar",
+              "encodings": {
+                "x": {
+                  "fieldName": "ano",
+                  "displayName": "Ano",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "y": {
+                  "fieldName": "avg(precipitacao_total_mm)",
+                  "format": {
+                    "type": "number-plain",
+                    "decimalPlaces": {
+                      "type": "exact",
+                      "places": 1
+                    },
+                    "abbreviation": "none"
+                  },
+                  "displayName": "Precipitação Média (mm)",
+                  "scale": {
+                    "type": "quantitative"
+                  }
+                },
+                "color": {
+                  "fieldName": "cidade",
+                  "legend": {
+                    "position": "right"
+                  },
+                  "displayName": "Cidade",
+                  "scale": {
+                    "type": "categorical"
+                  }
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 1,
+            "width": 12,
+            "height": 8
+          }
+        },
+        {
+          "widget": {
+            "name": "ae06f9b8",
+            "queries": [
+              {
+                "name": "main_query",
+                "query": {
+                  "datasetName": "0571b752",
+                  "fields": [
+                    {
+                      "name": "cidade",
+                      "expression": "`cidade`"
+                    },
+                    {
+                      "name": "mes",
+                      "expression": "`mes`"
+                    },
+                    {
+                      "name": "ano",
+                      "expression": "`ano`"
+                    },
+                    {
+                      "name": "avg(temperatura_media_c)",
+                      "expression": "AVG(`temperatura_media_c`)"
+                    }
+                  ],
+                  "cubeGroupingSets": {
+                    "sets": [
+                      {
+                        "fieldNames": [
+                          "cidade",
+                          "mes"
+                        ]
+                      },
+                      {
+                        "fieldNames": [
+                          "ano"
+                        ]
+                      }
+                    ]
+                  },
+                  "disaggregated": false,
+                  "orders": [
+                    {
+                      "direction": "ASC",
+                      "expression": "`cidade`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`mes`"
+                    },
+                    {
+                      "direction": "ASC",
+                      "expression": "`ano`"
+                    }
+                  ]
+                }
+              }
+            ],
+            "spec": {
+              "version": 3,
+              "frame": {
+                "title": "Média de Temperatura por Mês, Ano e Cidade",
+                "showTitle": true
+              },
+              "widgetType": "pivot",
+              "encodings": {
+                "rows": [
+                  {
+                    "fieldName": "cidade",
+                    "displayTotal": true,
+                    "displayName": "Cidade"
+                  },
+                  {
+                    "fieldName": "mes"
+                  }
+                ],
+                "columns": [
+                  {
+                    "fieldName": "ano",
+                    "displayTotal": true,
+                    "displayName": "Ano"
+                  }
+                ],
+                "cell": {
+                  "type": "multi-cell",
+                  "fields": [
+                    {
+                      "fieldName": "avg(temperatura_media_c)",
+                      "cellType": "text",
+                      "displayName": "Temp. Média (°C)"
+                    }
+                  ]
+                }
+              }
+            }
+          },
+          "position": {
+            "x": 0,
+            "y": 9,
+            "width": 12,
+            "height": 8
+          }
+        }
+      ],
+      "pageType": "PAGE_TYPE_CANVAS",
+      "layoutVersion": "GRID_V1"
+    }
+  ],
+  "uiSettings": {
+    "theme": {
+      "widgetHeaderAlignment": "ALIGNMENT_UNSPECIFIED"
+    },
+    "applyModeEnabled": false
+  }
+}
