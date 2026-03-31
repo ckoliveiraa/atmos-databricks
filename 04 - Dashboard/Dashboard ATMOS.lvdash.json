@@ -71,8 +71,8 @@
                       "expression": "`ano`"
                     },
                     {
-                      "name": "avg(precipitacao_total_mm)",
-                      "expression": "AVG(`precipitacao_total_mm`)"
+                      "name": "sum(precipitacao_total_mm)",
+                      "expression": "SUM(`precipitacao_total_mm`)"
                     }
                   ],
                   "disaggregated": false
@@ -95,7 +95,7 @@
                   }
                 },
                 "y": {
-                  "fieldName": "avg(precipitacao_total_mm)",
+                  "fieldName": "sum(precipitacao_total_mm)",
                   "format": {
                     "type": "number-plain",
                     "decimalPlaces": {
