@@ -1,0 +1,90 @@
+resources:
+  jobs:
+    Pipeline_ATMOS:
+      name: Pipeline_ATMOS
+      tasks:
+        - task_key: bronze_inmet_estacoes
+          notebook_task:
+            notebook_path: 01 - Create Bronze/ingest_bronze
+            base_parameters:
+              source_system: inmet
+              source_path: /Volumes/atmos/bronze/landing/inmet/estacao/
+              file_format: csv
+              target_table: atmos.bronze.inmet_estacao_raw
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+              schema_location: /Volumes/atmos/bronze/landing/_schema/inmet/estacao
+              checkpoint_location: /Volumes/atmos/bronze/landing/_checkpoint/inmet/estacao
+            source: GIT
+        - task_key: bronze_inmet_microdados
+          notebook_task:
+            notebook_path: 01 - Create Bronze/ingest_bronze
+            base_parameters:
+              source_system: inmet
+              source_path: /Volumes/atmos/bronze/landing/inmet/microdados/
+              file_format: csv
+              target_table: atmos.bronze.inmet_microdados_raw
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+              schema_location: /Volumes/atmos/bronze/landing/_schema/inmet/microdados
+              checkpoint_location: /Volumes/atmos/bronze/landing/_checkpoint/inmet/microdados
+            source: GIT
+        - task_key: bronze_visualcrossing
+          notebook_task:
+            notebook_path: 01 - Create Bronze/ingest_bronze
+            base_parameters:
+              source_system: visual_crossing
+              source_path: /Volumes/atmos/bronze/landing/visualcrossing/
+              file_format: json
+              target_table: atmos.bronze.visual_crossing_raw
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+              schema_location: /Volumes/atmos/bronze/landing/_schema/visual_crossing
+              checkpoint_location: /Volumes/atmos/bronze/landing/_checkpoint/visual_crossing
+            source: GIT
+        - task_key: silver_inmet
+          depends_on:
+            - task_key: bronze_inmet_estacoes
+            - task_key: bronze_inmet_microdados
+          notebook_task:
+            notebook_path: 02 - Create Silver/transform_inmet
+            base_parameters:
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+            source: GIT
+        - task_key: silver_visualcrossing
+          depends_on:
+            - task_key: bronze_visualcrossing
+          notebook_task:
+            notebook_path: 02 - Create Silver/transform_visual_crossing
+            base_parameters:
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+            source: GIT
+        - task_key: silver_unified
+          depends_on:
+            - task_key: silver_visualcrossing
+            - task_key: silver_inmet
+          notebook_task:
+            notebook_path: 02 - Create Silver/transform_unified
+            base_parameters:
+              ingestion_date: "{{job.parameters.ingestion_date}}"
+            source: GIT
+        - task_key: gold_perfil_sazonal_mensal
+          depends_on:
+            - task_key: silver_unified
+          notebook_task:
+            notebook_path: 03 - Create Gold/perfil_sazonal_mensal
+            source: GIT
+        - task_key: Dashboard_ATMOS
+          depends_on:
+            - task_key: gold_perfil_sazonal_mensal
+          dashboard_task:
+            subscription: {}
+            warehouse_id: 64793dc001d150d9
+            dashboard_id: 01f12c8b2912183e9ab438ef4e7e8f60
+      git_source:
+        git_url: https://github.com/ckoliveiraa/atmos-databricks.git
+        git_provider: gitHub
+        git_branch: main
+      queue:
+        enabled: true
+      parameters:
+        - name: ingestion_date
+          default: "{{job.start_time.iso_date}}"
+      performance_target: PERFORMANCE_OPTIMIZED
